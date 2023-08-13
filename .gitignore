@@ -31,3 +31,6 @@ move.sh
 
 # Test-vault
 docs/test-vault/.obsidian/workspace
+
+# Ignore the data.json file
+data.json
