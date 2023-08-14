@@ -11,7 +11,7 @@ export class Regex {
   mathInline: RegExp; // $ latex $
   cardsDeckLine: RegExp;
   cardsToDelete: RegExp;
-  globalTagsSplitter: RegExp;
+  globalTagsSplitterForArray: RegExp;
   tagHierarchy: RegExp;
 
   flashscardsWithTag: RegExp;
@@ -53,7 +53,7 @@ export class Regex {
     this.cardsToDelete = /^\s*(?:\n)(?:\^(\d{13}))(?:\n\s*?)?/gm;
 
     // https://regex101.com/r/WxuFI2/1
-    this.globalTagsSplitter =
+    this.globalTagsSplitterForArray =
       /\[\[(.*?)\]\]|#([\p{L}\d:\-_/]+)|([\p{L}\d:\-_/]+)/gimu;
     this.tagHierarchy = /\//gm;
 

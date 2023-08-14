@@ -407,8 +407,16 @@ export class CardsService {
   public parseGlobalTags(file: string): string[] {
     let globalTags: string[] = [];
 
-    const tags = file.match(/(?:cards-)?tags: ?(.*)/im);
-    globalTags = tags ? tags[1].match(this.regex.globalTagsSplitter) : [];
+    let tags = file.match(/(?:cards-)?tags: ?(.*)/im);
+    // Do second pass check if first regex match returns an empty string
+    // The match could be now any line after tags: that starts with a "-" (i.e. the list alternative for tags)
+    globalTags = tags ? tags[1].match(this.regex.globalTagsSplitterForArray) : [];
+    if(tags[1].length === 0) {
+      tags = file.match(/(?:cards-)?tags: ?((?:\r?\n-.*$)+)/im);
+      const matchedTags = tags[1].match(/^\s*-\s*(.+?)\s*$/gm);
+      globalTags = matchedTags?.map(tag => tag.trim().slice(1).trim());
+    }
+   
 
     if (globalTags) {
       for (let i = 0; i < globalTags.length; i++) {

@@ -22,7 +22,7 @@ const PRODUCTION_PLUGIN_CONFIG = {
 const DEV_PLUGIN_CONFIG = {
   input: 'main.ts',
   output: {
-    dir: 'docs/test-vault/.obsidian/plugins/flashcards-obsidian/',
+    dir: '.',
     sourcemap: 'inline',
     format: 'cjs',
     exports: 'default'
