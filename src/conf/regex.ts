@@ -61,9 +61,9 @@ export class Regex {
     const flags = "gimu";
     // https://regex101.com/r/p3yQwY/2
     let str =
-      "( {0,3}[#]*)((?:[^\\n]\\n?)+?)(#" +
+      "﹇( {0,3}[#]*)((?:[^]+?))(#" +
       settings.flashcardsTag +
-      "(?:[/-]reverse)?)((?: *#[\\p{Number}\\p{Letter}\\-\\/_]+)*) *?\\n+((?:[^\\n]\\n?)*?(?=\\^\\d{13}|$))(?:\\^(\\d{13}))?";
+      "(?:[/-]reverse)?)((?: *#.+)) ?\\n+((?:[^]+?)?﹈[^]{4})(?:\\^(\\d{13}))?";
     this.flashscardsWithTag = new RegExp(str, flags);
 
     // https://regex101.com/r/8wmOo8/1
