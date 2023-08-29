@@ -63,7 +63,7 @@ export class Regex {
     let str =
         "﹇( {0,3}[#]*)((?:[^]+?))(#" +
         settings.flashcardsTag +
-        "(?:[/-]reverse)?) *?((?: *#.+)?) ?\n+((?:[^]+?)?﹈[^]{4})(?:\\^(\\d{13}))?"
+        "(?:[/-]reverse)?) *?((?: *#.+)?) ?\\n+((?:[^]+?)?)[^]{4}﹈[^]{4}(?:\\^(\\d{13}))?"
     this.flashscardsWithTag = new RegExp(str, flags);
 
     // https://regex101.com/r/8wmOo8/1
