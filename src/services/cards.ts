@@ -412,7 +412,7 @@ export class CardsService {
     // The match could be now any line after tags: that starts with a "-" (i.e. the list alternative for tags)
     globalTags = tags ? tags[1].match(this.regex.globalTagsSplitterForArray) : [];
     if(tags[1].length === 0) {
-      tags = file.match(/(?:cards-)?tags: ?((?:\r?\n-.*$)+)/im);
+      tags = file.match(/(?:cards-)?tags: ?((?:\r?\n- +?.*$)+)/im);
       const matchedTags = tags[1].match(/^\s*-\s*(.+?)\s*$/gm);
       globalTags = matchedTags?.map(tag => tag.trim().slice(1).trim());
     }
