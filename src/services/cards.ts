@@ -247,7 +247,8 @@ export class CardsService {
             this.file.length + 1
           );
       }
-    } else {
+    } 
+    else {
       newFrontmatter = `---\n${cardsDeckLine}---\n\n`;
       this.totalOffset += newFrontmatter.length;
       this.file = newFrontmatter + this.file;
