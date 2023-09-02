@@ -556,14 +556,14 @@ export class Parser {
     // value： embed content parse from html document
     const embedMap = new Map()
 
-    var embedList = Array.from(document.documentElement.getElementsByClassName('internal-embed'));
+    const embedList = Array.from(document.documentElement.getElementsByClassName('internal-embed'));
 
 
     Array.from(embedList).forEach((el) => {
       // markdown-embed-content markdown-embed-page
-      var embedValue = this.htmlConverter.makeMarkdown(this.htmlConverter.makeHtml(el.outerHTML).toString());
+      const embedValue = this.htmlConverter.makeMarkdown(this.htmlConverter.makeHtml(el.outerHTML).toString());
 
-      var embedKey = el.getAttribute("src");
+      const embedKey = el.getAttribute("src");
       embedMap.set(embedKey, embedValue);
 
       // console.log("embedKey: \n" + embedKey);
@@ -574,7 +574,8 @@ export class Parser {
   }
 
   private getEmbedWrapContent(embedMap: Map<any, any>, embedContent: string): string {
-    var result = embedContent.match(this.regex.embedBlock);
+    let result = embedContent.match(this.regex.embedBlock);
+    // eslint-disable-next-line no-cond-assign
     while (result = this.regex.embedBlock.exec(embedContent)) {
       // console.log("result[0]: " + result[0]);
       // console.log("embedMap.get(result[1]): " + embedMap.get(result[1]));

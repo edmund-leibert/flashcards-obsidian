@@ -166,6 +166,7 @@ export class CardsService {
 
   private async generateMediaLinks(cards: Card[], sourcePath: string) {
     if (this.app.vault.adapter instanceof FileSystemAdapter) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore: Unreachable code error
 
       for (const card of cards) {
@@ -229,31 +230,35 @@ export class CardsService {
   private updateFrontmatter(frontmatter: FrontMatterCache, deckName: string) {
     let newFrontmatter = "";
     const cardsDeckLine = `cards-deck: ${deckName}\n`;
-    if (frontmatter) {
-      const oldFrontmatter: string = this.file.substring(
-        frontmatter.position.start.offset,
-        frontmatter.position.end.offset
-      );
+
+    // Use regex to match front matter block enclosed by '---'
+    const frontMatterRegex = /^---\n([\s\S]+?)\n---/m;
+    const match = this.file.match(frontMatterRegex);
+
+    if (match && match[1]) {
+      const oldFrontmatter = match[1];
+
+      // Add 'cards-deck' if it doesn't exist
       if (!oldFrontmatter.match(this.regex.cardsDeckLine)) {
         newFrontmatter =
-          oldFrontmatter.substring(0, oldFrontmatter.length - 3) +
-          cardsDeckLine +
-          "---";
+            "---\n" +
+            oldFrontmatter +
+            "\n" +
+            cardsDeckLine +
+            "---";
         this.totalOffset += cardsDeckLine.length;
-        this.file =
-          newFrontmatter +
-          this.file.substring(
-            frontmatter.position.end.offset,
-            this.file.length + 1
-          );
+
+        // Replace the old frontmatter with the new one
+        this.file = this.file.replace(frontMatterRegex, newFrontmatter);
       }
-    } 
-    else {
+    } else {
+      // If no frontmatter exists, create a new one
       newFrontmatter = `---\n${cardsDeckLine}---\n\n`;
       this.totalOffset += newFrontmatter.length;
       this.file = newFrontmatter + this.file;
     }
   }
+
 
   private writeAnkiBlocks(cardsToCreate: Card[]) {
     for (const card of cardsToCreate) {
@@ -408,29 +413,35 @@ export class CardsService {
   public parseGlobalTags(file: string): string[] {
     let globalTags: string[] = [];
 
-    let tags = file.match(/(?:cards-)?tags: ?(.*)/im);
-    // Do second pass check if first regex match returns an empty string
-    // The match could be now any line after tags: that starts with a "-" (i.e. the list alternative for tags)
-    globalTags = tags ? tags[1].match(this.regex.globalTagsSplitterForArray) : [];
-    if(tags[1].length === 0) {
-      tags = file.match(/(?:cards-)?tags: ?((?:\r?\n- +?.*$)+)/im);
-      const matchedTags = tags[1].match(/^\s*-\s*(.+?)\s*$/gm);
-      globalTags = matchedTags?.map(tag => tag.trim().slice(1).trim());
-    }
-   
+    // First pass: Try to match tags in the typical format
+    const regex1 = /tags:\n((?:\s+- [^\n]+\n)+)/m;
+    let match = regex1.exec(file);
 
-    if (globalTags) {
-      for (let i = 0; i < globalTags.length; i++) {
-        globalTags[i] = globalTags[i].replace("#", "");
-        globalTags[i] = globalTags[i].replace(/\//g, "::");
-        globalTags[i] = globalTags[i].replace(/\[\[(.*)\]\]/, "$1");
-        globalTags[i] = globalTags[i].trim();
-        globalTags[i] = globalTags[i].replace(/ /g, "-");
+    if (match && match[1]) {
+      globalTags = match[1].trim().split('\n').map(tag => tag.trim());
+    } else {
+      // Second pass: Check for an alternative list format for tags
+      const regex2 = /(?:cards-)?tags: ?((?:\r?\n- +?.*$)+)/im;
+      match = regex2.exec(file);
+
+      if (match && match[1]) {
+        const matchedTags = match[1].match(/^\s*-\s*(.+?)\s*$/gm);
+        globalTags = matchedTags?.map(tag => tag.trim().slice(1).trim()) || [];
       }
-
-      return globalTags;
     }
 
-    return [];
+    // Transform tags
+    if (globalTags.length > 0) {
+      globalTags = globalTags.map(tag => {
+        tag = tag.replace("#", "");
+        tag = tag.replace(/\//g, "::");
+        tag = tag.replace(/\[\[(.*)\]\]/, "$1");
+        tag = tag.trim();
+        return tag.replace(/ /g, "-");
+      });
+    }
+
+    globalTags = globalTags.map(tag => tag.replace(/^-+/g, ''));
+    return globalTags;
   }
 }
