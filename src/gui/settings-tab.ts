@@ -98,7 +98,7 @@ export class SettingsTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Folder-based deck name")
-      .setDesc("Add ID to end of line for inline cards.")
+      .setDesc("If the current file is in the path \"programming/java/strings.md\" then the deck name is \"programming::java\". Will be ignored if the deck name is specified in the cards-deck line.")
       .addToggle((toggle) =>
         toggle.setValue(plugin.settings.folderBasedDeck).onChange((value) => {
           plugin.settings.folderBasedDeck = value;
