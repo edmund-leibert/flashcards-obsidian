@@ -34,6 +34,22 @@ export default class ObsidianFlashcard extends Plugin {
 			}
 		});
 
+		this.addCommand({
+			id: 'delete-inline-ids-in-file',
+			name: 'Delete inline Anki flashcard IDs for the current file',
+			checkCallback: (checking: boolean) => {
+				const activeFile = this.app.workspace.getActiveFile()
+				if (activeFile) {
+					if (!checking) {
+						// TODO: Finish implementing this function
+						console.log("To do ");
+					}
+					return true;
+				}
+				return false;
+			}
+		});
+
 		this.addRibbonIcon('flashcards', 'Generate flashcards', () => {
 			const activeFile = this.app.workspace.getActiveFile()
 			if (activeFile) {
