@@ -444,4 +444,35 @@ export class CardsService {
     globalTags = globalTags.map(tag => tag.replace(/^-+/g, ''));
     return globalTags;
   }
+
+  public async removeInlineAnkiNoteIDsInActiveFile(activeFile: TFile) {
+    // Removes all inline IDs from the current file
+    try {
+      this.file = await this.app.vault.read(activeFile);
+      if (!this.file.endsWith("\n")) {
+        this.file += "\n";
+      }
+
+      // Replace all inline IDs with empty string
+      this.file = this.file.replace(this.regex.inlineNoteID, "");
+
+      this.updateFile = true;
+
+      // Update file
+      if (this.updateFile) {
+        try {
+          this.app.vault.modify(activeFile, this.file);
+        }
+        catch (err) {
+          Error("Could not update the file.");
+          return ["Error: Could not update the file."];
+        }
+      }
+    }
+    catch (err) {
+      console.error(err);
+      Error("Something went wrong");
+    }
+  }
+
 }

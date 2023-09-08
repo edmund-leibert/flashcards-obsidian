@@ -36,13 +36,13 @@ export default class ObsidianFlashcard extends Plugin {
 
 		this.addCommand({
 			id: 'delete-inline-ids-in-file',
-			name: 'Delete inline Anki flashcard IDs for the current file',
+			name: 'Delete inline Anki note IDs for the current file',
 			checkCallback: (checking: boolean) => {
 				const activeFile = this.app.workspace.getActiveFile()
 				if (activeFile) {
 					if (!checking) {
 						// TODO: Finish implementing this function
-						console.log("To do ");
+						this.removeInlineAnkiNoteIDsInActiveFile(activeFile);
 					}
 					return true;
 				}
@@ -76,6 +76,17 @@ export default class ObsidianFlashcard extends Plugin {
 
 	private generateCards(activeFile: TFile) {
 		this.cardsService.execute(activeFile).then(res => {
+			for (const r of res) {
+				new Notice(r, noticeTimeout)
+			}
+			console.log(res)
+		}).catch(err => {
+			Error(err)
+		})
+	}
+
+	private removeInlineAnkiNoteIDsInActiveFile(activeFile: TFile) {
+		this.cardsService.removeInlineAnkiNoteIDsInActiveFile(activeFile).then(res => {
 			for (const r of res) {
 				new Notice(r, noticeTimeout)
 			}

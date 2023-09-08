@@ -22,6 +22,8 @@ export class Regex {
   singleClozeHighlight: RegExp;
   clozeHighlight: RegExp;
 
+  inlineNoteID: RegExp;
+
   embedBlock: RegExp;
 
   constructor(settings: ISettings) {
@@ -79,6 +81,8 @@ export class Regex {
         "( {0,3}[#]{0,6})?(?:(?:[\\t ]*)(?:\\d.|[-+*]|#{1,6}))?(.+?) ?(" + sepLongest + "|" + sepShortest + ") ?(.+?)((?: *#[\\p{Letter}\\-\\/_]+)+|$)(?:\\n\\^(\\d{13}))?";
     }
     this.cardsInlineStyle = new RegExp(str, flags);
+
+    this.inlineNoteID = /(?:\^(\d{13}))/gimu;
 
     // https://regex101.com/r/HOXF5E/1
     str =
