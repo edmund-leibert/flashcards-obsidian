@@ -36,11 +36,27 @@ export class Parser {
   ): Flashcard[] {
     const contextAware = this.settings.contextAwareMode;
     let cards: Flashcard[] = [];
-    let headings: any = [];
+    const headings: any = [];
 
     if (contextAware) {
       // https://regex101.com/r/agSp9X/4
-      headings = [...file.matchAll(this.regex.headingsRegex)];
+      let inCodeBlock = false;
+
+      file.split('\n').forEach(line => {
+        // Check for code block start or end
+        if (line.trim().startsWith('```')) {
+          inCodeBlock = !inCodeBlock;
+        }
+
+        // Skip lines in code blocks
+        if (inCodeBlock) return;
+
+        // Match only if not in a code block
+        const match = line.match(/^ {0,3}(#{1,6}) +([^\n]+?) ?((?: *#\S+)*) *$/);
+        if (match) {
+          headings.push(match);
+        }
+      });
     }
 
     note = this.substituteObsidianLinks(`[[${note}]]`, vault);
