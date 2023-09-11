@@ -93,13 +93,13 @@ export class Regex {
 
     // https://regex101.com/r/cgtnLf/1
 
-    str = "( {0,3}[#]{0,6})?(?:(?:[\\t ]*)(?:\\d.|[-+*]|#{1,6}))?(.*?(==.+?==|\\{.+?\\}).*?)((?: *#[\\w\\-\\/_]+)+|$)(?:\n\\^(\\d{13}))?"
+    str = "( {0,3}[#]{0,6})?(?:(?:[\\t ]*)(?:\\d.|[-+*]|#{1,6}))?(.*?(==.+?==|\\{.+?\\}).*?)(\\n(?: *#[\\w\\-\\/_\\p{Emoji}]+)+|$)(?:\\n\\^(\\d{13}))?"
     this.cardsClozeWholeLine = new RegExp(str, flags);
-    
+
     this.singleClozeCurly = /((?:{)(?:(\d):?)?(.+?)(?:}))/g;
     this.singleClozeHighlight = /((?:==)(.+?)(?:==))/g;
 
-    // Matches any embedded block but the one with an used extension from the wikilinks
+    // Matches any embedded block, but the one with a used extension from the wikilinks.
     this.embedBlock = /!\[\[(.*?)(?<!\.(?:png|jpg|jpeg|gif|bmp|svg|tiff|mp3|webm|wav|m4a|ogg|3gp|flac))\]\]/g;
   }
 }
