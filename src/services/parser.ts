@@ -1,13 +1,13 @@
-import { ISettings } from "src/conf/settings";
+import {ISettings} from "src/conf/settings";
 import * as showdown from "showdown";
-import { Regex } from "src/conf/regex";
-import { Flashcard } from "../entities/flashcard";
-import { Inlinecard } from "src/entities/inlinecard";
-import { Spacedcard } from "src/entities/spacedcard";
-import { Clozecard } from "src/entities/clozecard";
-import { escapeMarkdown } from "src/utils";
-import { Card } from "src/entities/card";
-import { htmlToMarkdown } from 'obsidian';
+import {Regex} from "src/conf/regex";
+import {Flashcard} from "../entities/flashcard";
+import {Inlinecard} from "src/entities/inlinecard";
+import {Spacedcard} from "src/entities/spacedcard";
+import {Clozecard} from "src/entities/clozecard";
+import {escapeMarkdown} from "src/utils";
+import {Card} from "src/entities/card";
+import {htmlToMarkdown} from 'obsidian';
 
 export class Parser {
   private regex: Regex;
@@ -39,8 +39,8 @@ export class Parser {
     const headings: any = [];
 
     if (contextAware) {
-      // https://regex101.com/r/agSp9X/4
       let inCodeBlock = false;
+      let currentIndex = 0;
 
       file.split('\n').forEach(line => {
         // Check for code block start or end
@@ -49,13 +49,19 @@ export class Parser {
         }
 
         // Skip lines in code blocks
-        if (inCodeBlock) return;
+        if (inCodeBlock) {
+          currentIndex += line.length + 1; // update index, +1 for the newline character
+          return;
+        }
 
         // Match only if not in a code block
         const match = line.match(/^ {0,3}(#{1,6}) +([^\n]+?) ?((?: *#\S+)*) *$/);
         if (match) {
+          match.index = currentIndex; // Manually set index
           headings.push(match);
         }
+
+        currentIndex += line.length + 1; // update index, +1 for the newline character
       });
     }
 
@@ -103,9 +109,10 @@ export class Parser {
 
   /**
    * Gives back the ancestor headings of a line.
-   * @param headings The list of all the headings available in a file.
-   * @param line The line whose ancestors need to be calculated.
-   * @param headingLevel The level of the first ancestor heading, i.e. the number of #.
+   * @param headings The list of all the headings available in a file. Expected to be an array of match objects from String.matchAll().
+   * @param index The index of the line whose ancestors need to be calculated.
+   * @param headingLevel The level of the heading for the line if the line is itself a heading (number of '#'), or -1 if it's a paragraph.
+   * @returns An array of strings, each representing an ancestor heading text.
    */
   private getContext(
     headings: any,
@@ -114,35 +121,22 @@ export class Parser {
   ): string[] {
     const context: string[] = [];
     let currentIndex: number = index;
-    let goalLevel = 6;
+    let currentLevel: number = headingLevel === -1 ? 6 : headingLevel - 1; // Initialize to 6 if headingLevel is -1
 
-    let i = headings.length - 1;
-    // Get the level of the first heading before the index (i.e. above the current line)
-    if (headingLevel !== -1) {
-      // This is the case of a #flashcard in a heading
-      goalLevel = headingLevel - 1;
-    } else {
-      // Find first heading and its level
-      // This is the case of a #flashcard in a paragraph
-      for (i; i >= 0; i--) {
-        if (headings[i].index < currentIndex) {
-          currentIndex = headings[i].index;
-          goalLevel = headings[i][1].length - 1;
+    // Iterate over each heading from the last to the first
+    for (let i = headings.length - 1; i >= 0; i--) {
+      const heading = headings[i];
+      const headingIndex = heading.index;
+      const headingLevel = heading[1].length;
 
-          context.unshift(headings[i][2].trim());
-          break;
-        }
-      }
-    }
+      // Check if the heading is an ancestor of the current line
+      if (headingIndex < currentIndex && headingLevel <= currentLevel) {
+        // Update the current index and level
+        currentIndex = headingIndex;
+        currentLevel = headingLevel - 1; // look for the parent of this heading next
 
-    // Search for the other headings
-    for (i; i >= 0; i--) {
-      const currentLevel = headings[i][1].length;
-      if (currentLevel == goalLevel && headings[i].index < currentIndex) {
-        currentIndex = headings[i].index;
-        goalLevel = currentLevel - 1;
-
-        context.unshift(headings[i][2].trim());
+        // Add the heading to the context
+        context.unshift(heading[2].trim());
       }
     }
 
@@ -188,7 +182,7 @@ export class Parser {
       const tags: string[] = this.parseTags(match[4], globalTags);
       const id: number = match[5] ? Number(match[5]) : -1;
       const inserted: boolean = match[5] ? true : false;
-      const fields: any = { Prompt: prompt };
+      const fields: any = {Prompt: prompt};
       if (this.settings.sourceSupport) {
         fields["Source"] = note;
       }
@@ -284,7 +278,7 @@ export class Parser {
       const tags: string[] = this.parseTags(match[4], globalTags);
       const id: number = match[5] ? Number(match[5]) : -1;
       const inserted: boolean = match[5] ? true : false;
-      const fields: any = { Text: clozeText, Extra: "" };
+      const fields: any = {Text: clozeText, Extra: ""};
       if (this.settings.sourceSupport) {
         fields["Source"] = note;
       }
@@ -358,7 +352,7 @@ export class Parser {
       const tags: string[] = this.parseTags(match[5], globalTags);
       const id: number = match[6] ? Number(match[6]) : -1;
       const inserted: boolean = match[6] ? true : false;
-      const fields: any = { Front: question, Back: answer };
+      const fields: any = {Front: question, Back: answer};
       if (this.settings.sourceSupport) {
         fields["Source"] = note;
       }
@@ -430,7 +424,7 @@ export class Parser {
       const tags: string[] = this.parseTags(match[4], globalTags);
       const id: number = match[6] ? Number(match[6]) : -1;
       const inserted: boolean = match[6] ? true : false;
-      const fields: any = { Front: question, Back: answer };
+      const fields: any = {Front: question, Back: answer};
       if (this.settings.sourceSupport) {
         fields["Source"] = note;
       }

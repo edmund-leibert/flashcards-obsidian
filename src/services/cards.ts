@@ -1,4 +1,4 @@
-import { Anki } from "src/services/anki";
+import {Anki} from "src/services/anki";
 import {
   App,
   FileSystemAdapter,
@@ -7,13 +7,13 @@ import {
   parseFrontMatterEntry,
   TFile,
 } from "obsidian";
-import { Parser } from "src/services/parser";
-import { ISettings } from "src/conf/settings";
-import { Card } from "src/entities/card";
-import { arrayBufferToBase64 } from "src/utils";
-import { Regex } from "src/conf/regex";
-import { noticeTimeout } from "src/conf/constants";
-import { Inlinecard } from "src/entities/inlinecard";
+import {Parser} from "src/services/parser";
+import {ISettings} from "src/conf/settings";
+import {Card} from "src/entities/card";
+import {arrayBufferToBase64} from "src/utils";
+import {Regex} from "src/conf/regex";
+import {noticeTimeout} from "src/conf/constants";
+import {Inlinecard} from "src/entities/inlinecard";
 
 export class CardsService {
   private app: App;
@@ -241,11 +241,11 @@ export class CardsService {
       // Add 'cards-deck' if it doesn't exist
       if (!oldFrontmatter.match(this.regex.cardsDeckLine)) {
         newFrontmatter =
-            "---\n" +
-            oldFrontmatter +
-            "\n" +
-            cardsDeckLine +
-            "---";
+          "---\n" +
+          oldFrontmatter +
+          "\n" +
+          cardsDeckLine +
+          "---";
         this.totalOffset += cardsDeckLine.length;
 
         // Replace the old frontmatter with the new one
@@ -446,32 +446,33 @@ export class CardsService {
   }
 
   public async removeInlineAnkiNoteIDsInActiveFile(activeFile: TFile) {
-    // Removes all inline IDs from the current file
     try {
       this.file = await this.app.vault.read(activeFile);
       if (!this.file.endsWith("\n")) {
         this.file += "\n";
       }
 
-      // Replace all inline IDs with empty string
-      this.file = this.file.replace(this.regex.inlineNoteID, "");
+      // First, delete all instances of ^\d{13}
+      this.file = this.file.replace(/\^\d{13}/gm, "");
+
+      // Then delete lines where ^\d{13} appears all by itself
+      this.file = this.file.replace(/^\^\d{13}\n?/gm, "");
 
       this.updateFile = true;
 
-      // Update file
       if (this.updateFile) {
         try {
           this.app.vault.modify(activeFile, this.file);
         }
         catch (err) {
-          Error("Could not update the file.");
+          console.error("Could not update the file.");
           return ["Error: Could not update the file."];
         }
       }
     }
     catch (err) {
       console.error(err);
-      Error("Something went wrong");
+      console.error("Something went wrong");
     }
   }
 
