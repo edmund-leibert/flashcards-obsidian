@@ -263,12 +263,19 @@ export class Parser {
       }
 
       const originalLine = match[2].trim();
+
+      // Make a new context to add padding to make card generation uniform
+      const clozeText_padded = '<br>\n' + clozeText;
+
+
       // Add context
       clozeText = contextAware
-        ? [...context, clozeText.trim()].join(
-          `${this.settings.contextSeparator}`
-        )
-        : clozeText.trim();
+        ? [...context,clozeText_padded.trim()].join(`${this.settings.contextSeparator}`)
+        : clozeText_padded.trim();
+
+      console.log("Context: ");
+      console.log(context);
+      
       let medias: string[] = this.getImageLinks(clozeText);
       medias = medias.concat(this.getAudioLinks(clozeText));
       clozeText = this.parseLine(clozeText, vault);
