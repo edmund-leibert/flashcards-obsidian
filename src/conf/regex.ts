@@ -63,7 +63,7 @@ export class Regex {
     const flags = "gimu";
     // https://regex101.com/r/p3yQwY/2
     let str =
-        "﹇( {0,3}[#]*)((?:[^]+?))(#" +
+        "﹇<br>\\n( {0,3}[#]*)((?:[^]+?))(#" +
         settings.flashcardsTag +
         "(?:[/-]reverse)?) *?((?: *#.+)?) ?\\n+((?:[^]+?)?)[^]{4}﹈[^]{4}(?:\\^(\\d{13}))?"
     this.flashscardsWithTag = new RegExp(str, flags);
