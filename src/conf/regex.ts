@@ -24,6 +24,8 @@ export class Regex {
 
   inlineNoteID: RegExp;
 
+  calloutBlock: RegExp;
+
   embedBlock: RegExp;
 
   constructor(settings: ISettings) {
@@ -95,6 +97,8 @@ export class Regex {
 
     str = "( {0,3}[#]{0,6})?(?:(?:[\\t ]*)(?:\\d.|[-+*]|#{1,6}))?(.*?(==.+?==|\\{.+?\\}).*?)(\\n(?: *#[\\w\\-\\/_\\p{Emoji}]+)+|$)(?:\\n\\^(\\d{13}))?"
     this.cardsClozeWholeLine = new RegExp(str, flags);
+
+    this.calloutBlock = /<blockquote>\s*<p>\[!(\w+)\](.) (\w+)<br \/>s*([\s\S]*?)<\/p>\s*<\/blockquote>/gimu;
 
     this.singleClozeCurly = /((?:{)(?:(\d):?)?(.+?)(?:}))/g;
     this.singleClozeHighlight = /((?:==)(.+?)(?:==))/g;
