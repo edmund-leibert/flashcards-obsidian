@@ -1,6 +1,7 @@
 import typescript from '@rollup/plugin-typescript';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import svg from "rollup-plugin-svg";
 
 const PRODUCTION_PLUGIN_CONFIG = {
   input: 'main.ts',
@@ -16,6 +17,7 @@ const PRODUCTION_PLUGIN_CONFIG = {
     typescript(),
     nodeResolve({browser: true}),
     commonjs(),
+    svg()
   ]
 };
 
@@ -32,17 +34,14 @@ const DEV_PLUGIN_CONFIG = {
     typescript(),
     nodeResolve({browser: true}),
     commonjs(),
+    svg()
   ]
 };
 
 let configs = []
 
-if (process.env.BUILD === "dev") {
-  configs.push(DEV_PLUGIN_CONFIG);
-} else if (process.env.BUILD === "production" ) {
-  configs.push(PRODUCTION_PLUGIN_CONFIG);
-} else {
-  configs.push(DEV_PLUGIN_CONFIG);
-}
+// eslint-disable-next-line no-undef
+const pluginConfig = process.env.BUILD === "production" ? PRODUCTION_PLUGIN_CONFIG : DEV_PLUGIN_CONFIG;
+configs.push(pluginConfig);
 
 export default configs;

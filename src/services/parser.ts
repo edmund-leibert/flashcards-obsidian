@@ -6,6 +6,23 @@ import {Inlinecard} from "src/entities/inlinecard";
 import {Spacedcard} from "src/entities/spacedcard";
 import {Clozecard} from "src/entities/clozecard";
 import {escapeMarkdown} from "src/utils";
+import {match} from "minimatch";
+
+import lucideAltTriangle from "../assets/svg/lucide-alt-triangle.svg";
+import lucideBug from "../assets/svg/lucide-bug.svg";
+import lucideCheckCircle2 from "../assets/svg/lucide-check-circle-2.svg";
+import lucideChk from "../assets/svg/lucide-chk.svg";
+import lucideClipboardList from "../assets/svg/lucide-clipboard-list.svg";
+import lucideFle from "../assets/svg/lucide-fle.svg";
+import lucideHeCircle from "../assets/svg/lucide-he-circle.svg";
+import lucideInfo from "../assets/svg/lucide-info.svg";
+import lucideLit from "../assets/svg/lucide-lit.svg";
+import lucidePencil from "../assets/svg/lucide-pencil.svg";
+import lucideQue from "../assets/svg/lucide-que.svg";
+import lucideX from "../assets/svg/lucide-x.svg";
+import lucideZap from "../assets/svg/lucide-zap.svg";
+
+
 
 export class Parser {
   private regex: Regex;
@@ -468,19 +485,73 @@ export class Parser {
   private buildCalloutTemplate(type: string, data_callout_fold: string, label: string, content: string): string {
     let callout_content_display;
     let is_collapsed;
-    if(data_callout_fold === "+") {
+    if (data_callout_fold === "+") {
       callout_content_display = "block";
       is_collapsed = "is-collapsed";
     } else {
       callout_content_display = "none";
       is_collapsed = "";
     }
+
+    // Create an interface for the callout type
+    interface ICalloutType {
+      [key: string]: string;
+    }
+
+    // Create a dictionary of callout icons
+    const callout_icons: ICalloutType = {
+      "note": lucidePencil,
+
+      "abstract": lucideClipboardList,
+      "summary": lucideClipboardList,
+      "tldr": lucideClipboardList,
+
+      "info": lucideInfo,
+
+      "todo": lucideCheckCircle2,
+
+      "tip": lucideFle,
+      "hint": lucideFle,
+      "important": lucideFle,
+
+      "success": lucideChk,
+      "check": lucideChk,
+      "done": lucideChk,
+
+      "question": lucideHeCircle,
+      "help": lucideHeCircle,
+      "faq": lucideHeCircle,
+
+      "warning": lucideAltTriangle,
+      "caution": lucideAltTriangle,
+      "attention": lucideAltTriangle,
+
+      "failure": lucideX,
+      "fail": lucideX,
+      "missing": lucideX,
+
+      "danger": lucideZap,
+      "error": lucideZap,
+
+      "bug": lucideBug,
+
+      "example": lucideLit,
+
+      "quote": lucideQue,
+      "cite": lucideQue
+    }
+
+    type = type.toLocaleLowerCase(); // Convert the type to lowercase to match the keys in the callout_icons dictionary
+
+    // Get the icon for the callout type
+    const callout_icon_svg = callout_icons[type] ? callout_icons[type] : lucideInfo;
+
+
     return `
       <div data-callout-metadata="" data-callout-fold="${data_callout_fold}" data-callout="${type}" class="callout is-collapsible ${is_collapsed}">
           <div class="callout-title">
               <div class="callout-icon">
-                  <!-- SVG content here -->
-                
+                  ${callout_icon_svg}
               </div>
               <div class="callout-title-inner">${label}</div>
               <div class="callout-fold ${is_collapsed}">

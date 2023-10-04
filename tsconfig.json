@@ -20,6 +20,6 @@
     ],
   },
   "include": [
-    "**/*.ts", "jest.config.js",
+    "**/*.ts", "jest.config.js", "declarations.d.ts"
   ]
 }
