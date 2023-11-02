@@ -37,6 +37,7 @@
   "dependencies": {
     "@rollup/plugin-image": "^3.0.2",
     "@types/showdown": "^1.9.3",
+    "jsdom": "^22.1.0",
     "minimatch": "^9.0.3",
     "showdown": "^1.9.1"
   }
