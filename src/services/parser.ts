@@ -331,7 +331,7 @@ export class Parser {
       const reversed: boolean = match[3].trim().toLowerCase() === `#${this.settings.flashcardsTag}-reverse` || match[3].trim().toLowerCase() === `#${this.settings.flashcardsTag}/reverse`;
       const headingLevel = match[1].trim().length !== 0 ? match[1].length : -1;
       // Match.index - 1 because otherwise in the context there will be even match[1], i.e. the question itself
-      const context = contextAware ? this.getContext(headings, match.index - 1, headingLevel).concat([]) : "";
+      let context = contextAware ? this.getContext(headings, match.index - 1, headingLevel).concat([]) : "";
 
       const originalQuestion = match[2].trim();
       let question = contextAware ? [...context, match[2].trim()].join(`${this.settings.contextSeparator}`) : match[2].trim();
