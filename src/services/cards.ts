@@ -266,6 +266,10 @@ export class CardsService {
       //   if it has been inserted it has an ID too
       if (card.id !== null && !card.inserted) {
         let id = card.getIdFormat();
+        // If id contains "\n" at the end, make sure to remove it
+        if (id.endsWith("\n")) {
+          id = id.substring(0, id.length - 1);
+        }
         if (card instanceof Inlinecard) {
           if (this.settings.inlineID) {
             id = " " + id;
