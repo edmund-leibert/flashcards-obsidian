@@ -334,7 +334,17 @@ export class Parser {
       let context = contextAware ? this.getContext(headings, match.index - 1, headingLevel).concat([]) : "";
 
       const originalQuestion = match[2].trim();
-      let question = contextAware ? [...context, match[2].trim()].join(`${this.settings.contextSeparator}`) : match[2].trim();
+      // let question = contextAware ? [...context, "\n", "\n", match[2].trim()].join(`${this.settings.contextSeparator}`) : match[2].trim();
+      let question = "";
+      if (contextAware) {
+        question += "≡ ";
+        question += [... context].join(`${this.settings.contextSeparator}`);
+        question += "\n";
+        question += "\n";
+        question += match[2].trim();
+      }
+      console.log("Question: ");
+      console.log(question);
       let answer = match[5].trim();
       let medias: string[] = this.getImageLinks(question);
       medias = medias.concat(this.getImageLinks(answer));

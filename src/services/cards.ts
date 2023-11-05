@@ -283,6 +283,8 @@ export class CardsService {
           this.file.substring(offset, this.file.length + 1);
         this.totalOffset += id.length;
       }
+      console.log("Card: ");
+      console.log(card);
     }
   }
 

@@ -3,7 +3,7 @@
   "sourceSupport": false,
   "codeHighlightSupport": false,
   "inlineID": false,
-  "contextSeparator": " > ",
+  "contextSeparator": " ▸ ",
   "deck": "Default",
   "flashcardsTag": "card",
   "inlineSeparator": "::",
