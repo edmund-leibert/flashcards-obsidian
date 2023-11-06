@@ -337,7 +337,7 @@ export class Parser {
       // let question = contextAware ? [...context, "\n", "\n", match[2].trim()].join(`${this.settings.contextSeparator}`) : match[2].trim();
       let question = "";
       if (contextAware) {
-        question += "≡ ";
+        question += "<b>≡</b> ";
         question += [... context].join(`${this.settings.contextSeparator}`);
         question += "\n";
         question += "\n";
