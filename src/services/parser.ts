@@ -244,11 +244,19 @@ export class Parser {
       const originalLine = match[2].trim();
 
       // Make a new context to add padding to make card generation uniform
-      const clozeText_padded = '<br>\n' + clozeText;
-
+      const clozeText_padded = clozeText;
 
       // Add context
-      clozeText = contextAware ? [...context, clozeText_padded.trim()].join(`${this.settings.contextSeparator}`) : clozeText_padded.trim();
+      // clozeText = contextAware ? [...context, clozeText_padded.trim()].join(`${this.settings.contextSeparator}`) : clozeText_padded.trim();
+
+      clozeText = "";
+      if (contextAware) {
+        clozeText += "<b>≡</b> ";
+        clozeText += [... context].join(`${this.settings.contextSeparator}`);
+        clozeText += "\n";
+        clozeText += "\n";
+        clozeText += clozeText_padded.trim();
+      }
 
       console.log("Context: ");
       console.log(context);
