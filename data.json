@@ -3,7 +3,7 @@
   "sourceSupport": true,
   "codeHighlightSupport": true,
   "inlineID": true,
-  "contextSeparator": " > ",
+  "contextSeparator": " ▸ ",
   "deck": "Default",
   "folderBasedDeck": true,
   "flashcardsTag": "card",
