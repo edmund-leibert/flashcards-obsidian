@@ -100,8 +100,8 @@ export class Regex {
 
     this.calloutBlock = /\s*<p>\[!(\w+)\](.*)\s(\w+)<br \/>\s*([\s\S]*?)<\/p>\s*/gimu;
 
-    this.singleClozeCurly = /((?:{)(?:(\d):?)?(.+?)(?:}))/g;
-    this.singleClozeHighlight = /((?:==)(.+?)(?:==))/g;
+    this.singleClozeCurly = /((?:〔)(?:(\d):?)?(.+?)(?:〕))/g;
+    this.singleClozeHighlight = /((?:〔〔)(.+?)(?:〕〕))/g;
 
     // Matches any embedded block, but the one with a used extension from the wikilinks.
     this.embedBlock = /!\[\[(.*?)(?<!\.(?:png|jpg|jpeg|gif|bmp|svg|tiff|mp3|webm|wav|m4a|ogg|3gp|flac))\]\]/g;
